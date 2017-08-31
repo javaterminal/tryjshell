@@ -1,2 +1,2 @@
-mvn clean install
-docker build -t rahmanusta/cloudterm .
+call mvn clean install
+call docker build -t rahmanusta/cloudterm .

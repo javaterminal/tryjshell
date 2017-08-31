@@ -5,7 +5,7 @@ Rahman Usta
 :lang: en
 :toc: left
 :numbered:
-:description: CloudTerm is a Web terminal running on a JVM (Java Virutal Machine) or on a Docker container.
+:description: CloudTerm is a Web terminal running on a JVM (Java Virtual Machine) or on a Docker container.
 :author: Rahman Usta
 :keywords: web,terminal,java,cloud,tty,docker
 
