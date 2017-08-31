@@ -10,9 +10,14 @@ Rahman Usta
 :keywords: web,terminal,java,cloud,tty,docker
 
 ++++
+<a class="view-github" href="https://github.com/rahmanusta/cloudterm">View on Github</a>
 <style>
  .imageblock {
     text-align: center !important;
+ }
+ 
+ .view-github {
+    float: right;
  }
 </style>
 ++++
