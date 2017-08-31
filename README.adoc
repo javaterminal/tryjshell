@@ -18,7 +18,9 @@ Rahman Usta
 
 CloudTerm is a Web terminal running on a JVM (Java Virutal Machine) or on a Docker container.
 
-image::images/Image-310817-062349.305.png[width=900]
+image::https://raw.githubusercontent.com/rahmanusta/cloudterm/master/images/Image-310817-062349.305.png[width=900]
+
+//image::images/Image-310817-062349.305.png[width=900]
 
 == How to install
 
