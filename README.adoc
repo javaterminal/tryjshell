@@ -2,6 +2,8 @@
 
 CloudTerm is a Web terminal running on a JVM (Java Virutal Machine) or on a Docker container.
 
+image::images/Image-310817-062349.305.png[]
+
 == How to install
 
 You can run it with a standalone Tomcat server or with Docker. After it is run, open the browser http://localhost:8080
@@ -23,10 +25,6 @@ java -jar cloudterm.jar
 ----
 docker run -it --rm -p 8080:8080 rahmanusta/cloudterm
 ----
-
-=== Demo
-
-
 
 === License
 
