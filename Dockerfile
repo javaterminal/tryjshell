@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-slim
+FROM openjdk:9-jre-slim
 MAINTAINER Rahman Usta
 ENV shell="/bin/bash -i"
 COPY target/cloudterm.jar /opt/cloudterm/
