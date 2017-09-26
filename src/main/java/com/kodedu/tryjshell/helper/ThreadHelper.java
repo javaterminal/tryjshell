@@ -1,4 +1,4 @@
-package com.kodedu.cloudterm.helper;
+package com.kodedu.tryjshell.helper;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,7 +20,7 @@ public class ThreadHelper {
     }
 
     public static void start(Runnable runnable) {
-        Thread thread = new Thread(runnable);
+        Thread thread = new Thread(runnable,"JShell I/O");
         thread.start();
     }
 

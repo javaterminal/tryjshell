@@ -1,6 +1,6 @@
-package com.kodedu.cloudterm.config;
+package com.kodedu.tryjshell.config;
 
-import com.kodedu.cloudterm.websocket.TerminalSocket;
+import com.kodedu.tryjshell.websocket.TerminalSocket;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketHandler;
@@ -16,7 +16,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
-                .addHandler(terminalSocket(), "/terminal");
+                .addHandler(terminalSocket(), "/terminal")
+                .setAllowedOrigins("*");
     }
 
     @Bean

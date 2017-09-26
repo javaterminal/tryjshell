@@ -1,4 +1,4 @@
-package com.kodedu.cloudterm.helper;
+package com.kodedu.tryjshell.helper;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class IOHelper {
         }
     }
 
-    public static synchronized void copyLibPty(Path dataDir) throws IOException {
+    public static synchronized void copyLibPty(Path dataDir)  {
 
         Path donePath = dataDir.resolve(".DONE");
 
@@ -39,15 +39,27 @@ public class IOHelper {
             Path nativePath = dataDir.resolve(nativeFile);
 
             if (Files.notExists(nativePath)) {
-                Files.createDirectories(nativePath.getParent());
+                try {
+                    Files.createDirectories(nativePath.getParent());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 InputStream inputStream = IOHelper.class.getResourceAsStream("/" + nativeFile);
-                Files.copy(inputStream, nativePath);
+                try {
+                    Files.copy(inputStream, nativePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 close(inputStream);
             }
 
         }
 
-        Files.createFile(donePath);
+        try {
+            Files.createFile(donePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -1,8 +1,8 @@
-package com.kodedu.cloudterm.websocket;
+package com.kodedu.tryjshell.websocket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kodedu.cloudterm.service.TerminalService;
+import com.kodedu.tryjshell.service.TerminalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -25,7 +25,6 @@ public class TerminalSocket extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         terminalService.setWebSocketSession(session);
-        super.afterConnectionEstablished(session);
     }
 
     @Override
@@ -68,12 +67,13 @@ public class TerminalSocket extends TextWebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        super.handleTransportError(session, exception);
+        exception.printStackTrace();
+        terminalService.destroyProcess();
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        super.afterConnectionClosed(session, status);
+        terminalService.destroyProcess();
     }
 
     @Override
