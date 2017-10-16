@@ -2,7 +2,7 @@ FROM openjdk:9-jdk-slim
 MAINTAINER Rahman Usta
 ENV shell="/usr/bin/jshell"
 RUN apt-get update -y && apt-get install sudo vim iputils-ping -y
-VOLUME /tmp
+#VOLUME /tmp
 WORKDIR /opt/tryjshell/
 COPY target/tryjshell.jar .
 RUN useradd -ms /bin/bash tryjshell
