@@ -20,7 +20,7 @@ public class ThreadHelper {
     }
 
     public static void start(Runnable runnable) {
-        Thread thread = new Thread(runnable,"JShell I/O");
+        Thread thread = new Thread(runnable, "JShell I/O");
         thread.start();
     }
 

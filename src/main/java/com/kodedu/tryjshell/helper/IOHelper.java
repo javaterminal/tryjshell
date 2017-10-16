@@ -25,7 +25,7 @@ public class IOHelper {
         }
     }
 
-    public static synchronized void copyLibPty(Path dataDir)  {
+    public static synchronized void copyLibPty(Path dataDir) {
 
         Path donePath = dataDir.resolve(".DONE");
 

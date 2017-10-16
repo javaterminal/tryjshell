@@ -2,33 +2,54 @@ package com.kodedu.tryjshell.websocket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kodedu.tryjshell.nano.NanoApp;
 import com.kodedu.tryjshell.service.TerminalService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoWSD;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TerminalSocket extends TextWebSocketHandler {
+public class TerminalSocket extends NanoWSD.WebSocket {
 
-    private final TerminalService terminalService;
+    private final NanoApp nanoApp;
+    private final NanoHTTPD.IHTTPSession handshake;
+    private TerminalService terminalService;
 
-    @Autowired
-    public TerminalSocket(TerminalService terminalService) {
-        this.terminalService = terminalService;
+    public TerminalSocket(NanoApp nanoApp, NanoHTTPD.IHTTPSession handshake) {
+        super(handshake);
+        this.nanoApp = nanoApp;
+        this.handshake = handshake;
+        this.terminalService = new TerminalService(nanoApp, this);
     }
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        terminalService.setWebSocketSession(session);
+    private Map<String, String> getMessageMap(NanoWSD.WebSocketFrame message) {
+        try {
+            Map<String, String> map = new ObjectMapper().readValue(message.getTextPayload(), new TypeReference<Map<String, String>>() {
+            });
+
+            return map;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
     }
 
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void onOpen() {
+
+        System.out.println();
+
+    }
+
+    protected void onClose(NanoWSD.WebSocketFrame.CloseCode code, String reason, boolean initiatedByRemote) {
+
+        terminalService.destroyProcess();
+
+    }
+
+    protected void onMessage(NanoWSD.WebSocketFrame message) {
+
         Map<String, String> messageMap = getMessageMap(message);
 
         if (messageMap.containsKey("type")) {
@@ -51,33 +72,17 @@ public class TerminalSocket extends TextWebSocketHandler {
                     throw new RuntimeException("Unrecodnized action");
             }
         }
+
     }
 
-    private Map<String, String> getMessageMap(TextMessage message) {
-        try {
-            Map<String, String> map = new ObjectMapper().readValue(message.getPayload(), new TypeReference<Map<String, String>>() {
-            });
+    protected void onPong(NanoWSD.WebSocketFrame pong) {
 
-            return map;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new HashMap<>();
     }
 
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    protected void onException(IOException exception) {
+
         exception.printStackTrace();
         terminalService.destroyProcess();
-    }
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        terminalService.destroyProcess();
-    }
-
-    @Override
-    public boolean supportsPartialMessages() {
-        return super.supportsPartialMessages();
     }
 }

@@ -3,15 +3,12 @@ package com.kodedu.tryjshell.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kodedu.tryjshell.helper.IOHelper;
 import com.kodedu.tryjshell.helper.ThreadHelper;
+import com.kodedu.tryjshell.nano.NanoApp;
 import com.kodedu.tryjshell.process.ProcessWrapper;
+import com.kodedu.tryjshell.websocket.TerminalSocket;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,20 +16,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.IntStream;
 
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class TerminalService {
 
     private static String shellStarter;
-
-    private WebSocketSession webSocketSession;
-
-    //    private LinkedBlockingQueue<String> commandQueue = new LinkedBlockingQueue<>();
     private static LinkedBlockingQueue<ProcessWrapper> processQueue = new LinkedBlockingQueue<>();
+    private final NanoApp nanoApp;
+    private final TerminalSocket terminalSocket;
     private ProcessWrapper processWrapper;
     private BufferedWriter outputWriter;
+
+    public TerminalService(NanoApp nanoApp, TerminalSocket terminalSocket) {
+        this.nanoApp = nanoApp;
+        this.terminalSocket = terminalSocket;
+        init();
+    }
 
     public synchronized void addSingleProcess() {
 
@@ -67,7 +67,6 @@ public class TerminalService {
             processWrapper.setErrorReader(errorReader);
 
 
-
             processQueue.offer(processWrapper);
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +74,6 @@ public class TerminalService {
 
     }
 
-    @PostConstruct
     public void init() {
 
         shellStarter = System.getenv("shell");
@@ -160,8 +158,8 @@ public class TerminalService {
 
         String message = new ObjectMapper().writeValueAsString(map);
 
-        if (webSocketSession.isOpen()) {
-            webSocketSession.sendMessage(new TextMessage(message));
+        if (terminalSocket.isOpen()) {
+            terminalSocket.send(message);
         }
 
     }
@@ -182,7 +180,7 @@ public class TerminalService {
         }
     }
 
-    public void onCommand(BufferedWriter outputWriter, String command) throws InterruptedException {
+    public void onCommand(BufferedWriter outputWriter, String command) {
 
         if (Objects.isNull(command)) {
             return;
@@ -196,7 +194,7 @@ public class TerminalService {
         }
     }
 
-    public void onCommand(String command) throws InterruptedException {
+    public void onCommand(String command) {
         onCommand(this.outputWriter, command);
     }
 
@@ -210,11 +208,4 @@ public class TerminalService {
         }
     }
 
-    public void setWebSocketSession(WebSocketSession webSocketSession) {
-        this.webSocketSession = webSocketSession;
-    }
-
-    public WebSocketSession getWebSocketSession() {
-        return webSocketSession;
-    }
 }

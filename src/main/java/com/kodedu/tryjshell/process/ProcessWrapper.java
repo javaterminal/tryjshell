@@ -13,31 +13,31 @@ public class ProcessWrapper {
     private BufferedReader errorReader;
 
     public ProcessWrapper(PtyProcess process) {
-        this.process= process;
-    }
-
-    public void setOutputWriter(BufferedWriter outputWriter) {
-        this.outputWriter = outputWriter;
+        this.process = process;
     }
 
     public BufferedWriter getOutputWriter() {
         return outputWriter;
     }
 
-    public void setInputReader(BufferedReader inputReader) {
-        this.inputReader = inputReader;
+    public void setOutputWriter(BufferedWriter outputWriter) {
+        this.outputWriter = outputWriter;
     }
 
     public BufferedReader getInputReader() {
         return inputReader;
     }
 
-    public void setErrorReader(BufferedReader errorReader) {
-        this.errorReader = errorReader;
+    public void setInputReader(BufferedReader inputReader) {
+        this.inputReader = inputReader;
     }
 
     public BufferedReader getErrorReader() {
         return errorReader;
+    }
+
+    public void setErrorReader(BufferedReader errorReader) {
+        this.errorReader = errorReader;
     }
 
     public PtyProcess getProcess() {
