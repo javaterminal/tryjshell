@@ -4,7 +4,6 @@ import com.kodedu.tryjshell.websocket.TerminalSocket;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoWSD;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -28,7 +27,6 @@ public class NanoApp extends NanoWSD {
 
     @Override
     protected Response serveHttp(IHTTPSession session) {
-        BufferedInputStream fis = null;
         String contentType = null;
         try {
 //            Path root = Paths.get("C:\\Users\\usta\\tryjshell\\src\\main\\resources\\public");
@@ -43,13 +41,13 @@ public class NanoApp extends NanoWSD {
 
 //            Path resolve = root.resolve(uri);
             contentType = Files.probeContentType(Paths.get(uri));
-            fis = new BufferedInputStream(inputStream);
+
+            return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, contentType, inputStream, inputStream.available());
         } catch (Exception e) {
 //            e.printStackTrace();
             return NanoHTTPD.newFixedLengthResponse("No Response");
         }
 
-        return NanoHTTPD.newChunkedResponse(Response.Status.OK, contentType, fis);
     }
 
 }
