@@ -20,6 +20,7 @@
     opacity: 0.4;
     right: 30px;
     font-size: smaller;
+    z-index: 9999;
 }
 
 #footer a:last-child {

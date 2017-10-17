@@ -1,58 +1,52 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    function initializeTerminal() {
+    var term = new Terminal({
+        cursorBlink: true,
+        scrollback: 2500
+    });
+    let termDom = document.querySelector('#terminal');
 
-        hterm.defaultStorage = new lib.Storage.Memory();
-
-        window.t = new hterm.Terminal("cloudterm");
-
-        t.onTerminalReady = function () {
-
-            app.initializeStyles();
-            app.onTerminalInit();
-
-            var io = t.io.push();
-
-            io.onVTKeystroke = function (str) {
-                app.onCommand(str);
-            };
-
-            io.sendString = io.onVTKeystroke;
-
-            io.onTerminalResize = function (columns, rows) {
-                app.resizeTerminal(columns, rows);
-            };
-
-            t.installKeyboard();
-            app.onTerminalReady();
-
-        };
-
-        t.decorate(document.querySelector('#terminal'));
-        t.showOverlay("Connection established", 1000);
-    }
-
+    window.term = term;
 
     let protocol = location.protocol.indexOf("https") !== -1 ? "wss" : "ws";
     let ws = new WebSocket(protocol + "://" + location.host + "/terminal");
+
+    function initializeTerminal() {
+
+        term.on('resize', app.resizeTerminal);
+        term.on('data', app.onCommand);
+
+        term.open(termDom, true);
+
+        term.linkify();
+        term.toggleFullscreen();
+        term.fit();
+        term.focus();
+
+        app.onTerminalReady();
+
+        window.addEventListener('resize', debounce(term.fit.bind(term), 100, false), false);
+        window.addEventListener('orientationchange', debounce(term.fit.bind(term), 100, false), false);
+
+    }
 
     ws.onopen = () => {
         initializeTerminal();
     }
 
     ws.onerror = (e) => {
-        t.showOverlay("Connection error", 3000);
+        alert("Connection error, try again..")
     }
 
     ws.onclose = () => {
-        t.showOverlay("Connection closed", 3000);
+        alert("Connection closed, reload page..")
     }
 
     ws.onmessage = (e) => {
         let data = JSON.parse(e.data);
         switch (data.type) {
             case "TERMINAL_PRINT":
-                t.io.print(data.text);
+                term.write(data.text);
         }
     }
 
@@ -65,43 +59,39 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     let app = {
-        onTerminalInit() {
-            ws.send(action("TERMINAL_INIT"));
-        },
         onCommand(command) {
             ws.send(action("TERMINAL_COMMAND", {
                 command
             }));
         },
-        resizeTerminal(columns, rows) {
+        resizeTerminal({cols, rows}) {
             ws.send(action("TERMINAL_RESIZE", {
-                columns, rows
+                cols, rows
             }));
+
+            // term.refresh(1, cols)
         },
         onTerminalReady() {
             ws.send(action("TERMINAL_READY"));
         },
         initializeStyles() {
 
-            t.getPrefs().set("send-encoding", "utf-8");
-            t.getPrefs().set("receive-encoding", "utf-8");
-
-// t.getPrefs().set("use-default-window-copy", true);
-            t.getPrefs().set("clear-selection-after-copy", true);
-            t.getPrefs().set("copy-on-select", true);
-            t.getPrefs().set("ctrl-c-copy", true);
-            t.getPrefs().set("ctrl-v-paste", true);
-// t.getPrefs().set("cursor-color", "black");
-// t.getPrefs().set("background-color", "white");
-// t.getPrefs().set("font-size", 12);
-// t.getPrefs().set("foreground-color", "black");
-// t.getPrefs().set("cursor-blink", false);
-t.getPrefs().set("scrollbar-visible", true);
-// t.getPrefs().set("scroll-wheel-move-multiplier", 0.1);
-// t.getPrefs().set("user-css", "/afx/resource/?p=css/hterm.css");
-            t.getPrefs().set("enable-clipboard-notice", true);
-
         }
     };
 
 });
+
+const debounce = function (func, wait, immediate) {
+    var timeout;
+    return () => {
+        const context = this, args = arguments;
+        const later = function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+}

@@ -28,6 +28,9 @@ public class TerminalService {
     private ProcessWrapper processWrapper;
     private BufferedWriter outputWriter;
 
+    private String cols = "80";
+    private String rows = "20";
+
     public TerminalService(NanoApp nanoApp, TerminalSocket terminalSocket) {
         this.nanoApp = nanoApp;
         this.terminalSocket = terminalSocket;
@@ -108,6 +111,8 @@ public class TerminalService {
         }
 
         this.processWrapper = processQueue.poll();
+
+        onTerminalResize(this.cols, this.rows);
 
         this.outputWriter = processWrapper.getOutputWriter();
         BufferedReader inputReader = processWrapper.getInputReader();
@@ -198,11 +203,15 @@ public class TerminalService {
         onCommand(this.outputWriter, command);
     }
 
-    public void onTerminalResize(String columns, String rows) {
-        if (Objects.nonNull(columns) && Objects.nonNull(rows)) {
+    public void onTerminalResize(String cols, String rows) {
+        if (Objects.nonNull(cols) && Objects.nonNull(rows)) {
+
+            this.cols = cols;
+            this.rows = rows;
 
             if (Objects.nonNull(processWrapper)) {
-                processWrapper.getProcess().setWinSize(new WinSize(Integer.valueOf(columns), Integer.valueOf(rows)));
+
+                processWrapper.getProcess().setWinSize(new WinSize(Integer.parseInt(cols), Integer.parseInt(rows)));
             }
 
         }

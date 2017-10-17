@@ -56,9 +56,6 @@ public class TerminalSocket extends NanoWSD.WebSocket {
             String type = messageMap.get("type");
 
             switch (type) {
-                case "TERMINAL_INIT":
-                    terminalService.onTerminalInit();
-                    break;
                 case "TERMINAL_READY":
                     terminalService.onTerminalReady();
                     break;
@@ -66,7 +63,7 @@ public class TerminalSocket extends NanoWSD.WebSocket {
                     terminalService.onCommand(messageMap.get("command"));
                     break;
                 case "TERMINAL_RESIZE":
-                    terminalService.onTerminalResize(messageMap.get("columns"), messageMap.get("rows"));
+                    terminalService.onTerminalResize(messageMap.get("cols"), messageMap.get("rows"));
                     break;
                 default:
                     throw new RuntimeException("Unrecodnized action");

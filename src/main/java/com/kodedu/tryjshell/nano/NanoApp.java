@@ -7,6 +7,8 @@ import fi.iki.elonen.NanoWSD;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class NanoApp extends NanoWSD {
 
@@ -40,7 +42,7 @@ public class NanoApp extends NanoWSD {
             InputStream inputStream = NanoApp.class.getResourceAsStream("/public" + uri);
 
 //            Path resolve = root.resolve(uri);
-//            contentType = Files.probeContentType(resolve);
+            contentType = Files.probeContentType(Paths.get(uri));
             fis = new BufferedInputStream(inputStream);
         } catch (Exception e) {
 //            e.printStackTrace();
