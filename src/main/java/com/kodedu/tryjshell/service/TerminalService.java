@@ -27,6 +27,7 @@ public class TerminalService {
     private final TerminalSocket terminalSocket;
     private ProcessWrapper processWrapper;
     private BufferedWriter outputWriter;
+    private boolean firstSent = false;
 
     private String cols = "80";
     private String rows = "20";
@@ -126,8 +127,6 @@ public class TerminalService {
             printReader(errorReader);
         });
 
-        this.onCommand(outputWriter, "/set editor /usr/bin/vim\n");
-
         processWrapper.getProcess().waitFor();
 
         destroyProcess();
@@ -165,6 +164,11 @@ public class TerminalService {
 
         if (terminalSocket.isOpen()) {
             terminalSocket.send(message);
+
+            if (!firstSent) {
+                firstSent = true;
+                this.onCommand(outputWriter, "/set editor /usr/bin/vim\n");
+            }
         }
 
     }
