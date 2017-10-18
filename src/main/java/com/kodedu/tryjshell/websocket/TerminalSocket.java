@@ -2,20 +2,26 @@ package com.kodedu.tryjshell.websocket;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kodedu.tryjshell.helper.ThreadHelper;
 import com.kodedu.tryjshell.nano.NanoApp;
 import com.kodedu.tryjshell.service.TerminalService;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoWSD;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class TerminalSocket extends NanoWSD.WebSocket {
 
     private final NanoApp nanoApp;
     private final NanoHTTPD.IHTTPSession handshake;
     private TerminalService terminalService;
+    private List<ScheduledFuture<?>> scheduleFutures = new ArrayList<>();
 
     public TerminalSocket(NanoApp nanoApp, NanoHTTPD.IHTTPSession handshake) {
         super(handshake);
@@ -38,14 +44,38 @@ public class TerminalSocket extends NanoWSD.WebSocket {
 
     protected void onOpen() {
 
-        System.out.println();
+        ScheduledFuture<?> scheduledFuture1 = ThreadHelper.scheduleAtFixedRate(() -> {
+
+            try {
+                ping(new byte[]{});
+            } catch (Exception e) {
+//                e.printStackTrace();
+            }
+
+        }, 0, 25, TimeUnit.SECONDS);
+
+        ScheduledFuture<?> scheduledFuture2 = ThreadHelper.schedule(() -> {
+            scheduledFuture1.cancel(true);
+        }, 2, TimeUnit.MINUTES);
+
+        scheduleFutures.add(scheduledFuture1);
+        scheduleFutures.add(scheduledFuture2);
 
     }
 
     protected void onClose(NanoWSD.WebSocketFrame.CloseCode code, String reason, boolean initiatedByRemote) {
-
         terminalService.destroyProcess();
+        closeScheduleds();
+    }
 
+    private void closeScheduleds() {
+        for (ScheduledFuture<?> scheduleFuture : scheduleFutures) {
+            try {
+                scheduleFuture.cancel(true);
+            } catch (Exception e) {
+
+            }
+        }
     }
 
     protected void onMessage(NanoWSD.WebSocketFrame message) {
@@ -80,6 +110,7 @@ public class TerminalSocket extends NanoWSD.WebSocket {
 
         exception.printStackTrace();
         terminalService.destroyProcess();
+        closeScheduleds();
 
     }
 }
