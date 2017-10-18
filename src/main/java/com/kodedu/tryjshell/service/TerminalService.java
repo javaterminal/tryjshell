@@ -126,7 +126,7 @@ public class TerminalService {
             printReader(errorReader);
         });
 
-        this.onCommand(outputWriter, "/set editor /usr/bin/vim\n");
+//        this.onCommand(outputWriter, "/set editor /usr/bin/vim\n");
 
         processWrapper.getProcess().waitFor();
 
