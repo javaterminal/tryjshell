@@ -11,6 +11,6 @@ RUN chmod -R  a+w /tmp || true
 RUN chmod -R  a+w /home/tryjshell/ || true
 RUN chmod -R  a+x /usr/bin/java || true
 RUN chmod -R  a+x /usr/bin/jshell || true
-RUN chmod -R  a+x /usr/bin/vim || true
+RUN chmod -R  a+x+r /usr/bin/vim || true
 USER tryjshell
 CMD ["java","-jar","./tryjshell.jar"]
