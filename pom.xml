@@ -22,9 +22,9 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.asciidocfx.pty4j</groupId>
+            <groupId>com.kodedu.pty4j</groupId>
             <artifactId>pty4j</artifactId>
-            <version>0.7.3</version>
+            <version>0.7.4</version>
         </dependency>
 
         <dependency>
@@ -48,13 +48,8 @@
 
     <repositories>
         <repository>
-            <id>rahmanusta-releases</id>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-            <url>http://asciidocfx.com/build</url>
+            <id>pty4j-releases</id>
+            <url>https://github.com/javaterminal/pty4j/raw/master/releases</url>
         </repository>
     </repositories>
 
