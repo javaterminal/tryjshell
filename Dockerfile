@@ -1,4 +1,4 @@
-FROM openjdk:10-jdk-slim
+FROM openjdk:11-jdk-slim
 MAINTAINER Rahman Usta
 ENV shell="/usr/bin/jshell"
 RUN apt-get update -y && apt-get install sudo vim -y
