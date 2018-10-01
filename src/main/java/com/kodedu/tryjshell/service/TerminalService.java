@@ -86,6 +86,8 @@ public class TerminalService {
             shellStarter = "jshell.exe";
         }
 
+        shellStarter = shellStarter + " --enable-preview";
+
     }
 
     public void onTerminalInit() {
