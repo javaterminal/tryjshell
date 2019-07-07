@@ -8,6 +8,7 @@ import com.kodedu.tryjshell.process.ProcessWrapper;
 import com.kodedu.tryjshell.websocket.TerminalSocket;
 import com.pty4j.PtyProcess;
 import com.pty4j.WinSize;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -83,7 +84,12 @@ public class TerminalService {
         shellStarter = System.getenv("shell");
 
         if (Objects.isNull(shellStarter)) {
-            shellStarter = "jshell.exe";
+            if (SystemUtils.IS_OS_WINDOWS) {
+                shellStarter = "jshell.exe";
+            } else {
+                shellStarter = "jshell";
+            }
+
         }
 
         shellStarter = shellStarter + " --enable-preview";
@@ -170,6 +176,7 @@ public class TerminalService {
             if (!firstSent) {
                 firstSent = true;
                 this.onCommand(outputWriter, "/set editor /usr/bin/vim\n");
+                //this.onCommand(outputWriter, "System.setSecurityManager(new CustomSecurityManager())\n");
             }
         }
 
