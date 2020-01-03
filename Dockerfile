@@ -1,4 +1,4 @@
-FROM openjdk:14-ea-oracle
+FROM openjdk:14-jdk-oracle
 MAINTAINER Rahman Usta
 ENV shell="jshell"
 RUN yum install -y vim
