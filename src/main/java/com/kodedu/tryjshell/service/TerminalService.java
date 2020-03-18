@@ -92,7 +92,7 @@ public class TerminalService {
 
         }
 
-        shellStarter = shellStarter + " --enable-preview";
+        shellStarter = shellStarter + " --enable-preview -R-XX:+ShowCodeDetailsInExceptionMessages";
 
     }
 
