@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 .mvnw clean install -DskipTests -T 1.5C
-#docker build -t rahmanusta/openjdk12 . -f Dockerfile.jdk12
-docker build -t rahmanusta/openjdk15 . -f Dockerfile.jdk15
+#Builds jdk17 image for arm64 platform
+docker build -t rahmanusta/jdk17.arm64 . -f jdk17.arm64.Dockerfile
+
+docker build -t rahmanusta/tryjshell.arm . -f Arm.Dockerfile
 docker build -t rahmanusta/tryjshell .

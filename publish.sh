@@ -1,3 +1,4 @@
-#docker push rahmanusta/openjdk12
-docker push rahmanusta/openjdk15
+docker push rahmanusta/jdk17.arm64
+
 docker push rahmanusta/tryjshell
+docker push rahmanusta/tryjshell.arm

@@ -7,11 +7,11 @@ Rahman Usta
 :numbered:
 :description: tryjshell.org is a web terminal to test Java 9 through 10 features on JSHELL
 :author: Rahman Usta
-:keywords: web,terminal,java-9,java-10,jshell,tty,docker,cloud
+:keywords: web,terminal,java-16,java-17,jshell,tty,docker,cloud
 
 == About
 
-tryjshell.org is a web terminal to try and test Java 9 through 10 experimental features on the JShell tool.
+tryjshell.org is a web terminal to try and test Java 17 and experimental features on the JShell tool.
 
 image::images/print-screen.png[width=900]
 

@@ -27,3 +27,4 @@ nbdist/
 /.idea/
 
 /jdk-12/
+/jdk-17.AArch64
